@@ -1,11 +1,23 @@
-const inboxButton = document.querySelector("#index")
-const todayButton = document.querySelector("#today")
-const thisWeekButton = document.querySelector("#thisWeek")
+import DOMEdit from "./DOMManipulation"
 
-inboxButton.addEventListener('click',() => {
+const inboxButton = document.querySelector(".inbox")
+const todayButton = document.querySelector(".today")
+const thisWeekButton = document.querySelector(".thisWeek")
+const addProject = document.querySelector(".addProject")
+
+const buttonLogic = () => {
+    inboxButton.addEventListener('click',  () => {
     //cerca tutti gli impegni del giorno
     //li mette all'interno di un array di oggetti
     //mostra gli oggetti
 
     
-})
+    });
+
+    addProject.addEventListener('click', () => {
+        DOMEdit.editSideBar.addProjectText()
+    });
+    
+};
+
+export default buttonLogic
