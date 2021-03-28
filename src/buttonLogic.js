@@ -14,7 +14,7 @@ const addProjectRemoveLogic = () => {
     deleteIcon.forEach(icon => {
         icon.addEventListener('click', (event) => {
             let project = event.target.parentElement
-/*             projectHandler.deleteProjectFromList(project) */
+            projectHandler.deleteProjectFromList(project)
             DOMEdit.editSideBar.removeProject(project)
         })
     })
@@ -26,7 +26,7 @@ const addProjectRemoveLogic = () => {
         })
         project.addEventListener('mouseout', (event) => {
             let icon = document.querySelector('.singleProject i:last-of-type')
-            if(event.target === icon) {
+            if(!event.target || event.target === icon) {
                 return
             }
             icon.style.opacity = 0;
@@ -40,6 +40,7 @@ const buttonLogic = () => {
     //li mette all'interno di un array di oggetti
     //mostra gli oggetti
         DOMEdit.editSideBar.toggleSelected(e.target)
+        DOMEdit.editContainer.showTodoAdder()
     });
 
     addProject.addEventListener('click', (e) => {
@@ -55,7 +56,15 @@ const buttonLogic = () => {
         DOMEdit.editSideBar.toggleSelected(e.target)
     })
 
-
 };
 
-export {addProjectRemoveLogic as addProjectRemoveLogic, buttonLogic as default}
+const addTaskLogic = () => {
+    const addTask = document.querySelector(".addTask")
+    addTask.addEventListener('click', () => {
+        DOMEdit.editContainer.addTaskContext()
+    })
+}
+
+export {addTaskLogic as addTaskLogic, 
+        addProjectRemoveLogic as addProjectRemoveLogic, 
+        buttonLogic as default}

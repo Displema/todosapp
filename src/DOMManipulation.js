@@ -1,5 +1,6 @@
 import DOMPurify from 'dompurify';
 import {addProjectRemoveLogic} from "./buttonLogic"
+import {listOfProjects, default as projectHandler} from "./projectHandler"
 
 const toDoSidebar = document.querySelector('.ToDoDate')
 const toDoContainer = document.querySelector('.ToDoContainer')
@@ -20,10 +21,15 @@ const editSideBar = (() => {
         input.setAttribute('data-button', 'project')
         projects.insertBefore(input, addProjectButton)
         input.focus()
-        input.addEventListener('blur', (e)=> {
-            let newProject = e.target.value ? e.target.value : "Default"
-            addProject(newProject)
+        input.addEventListener('blur', (event)=> {
+            let newProject = event.target.value ? event.target.value : "Default"
+            if(listOfProjects.indexOf(newProject) !== -1) {
+                removeProjectText(input);
+                return
+            }
+            addProject(newProject)           
             removeProjectText(input);
+            projectHandler.addProjectInList(newProject)
             toggleSelected()
         })
         toggleSelected(addProjectButton)
@@ -45,7 +51,9 @@ const editSideBar = (() => {
         if (selected) {
             selected.classList.remove('selected')
         }
-        target.classList.add('selected')
+        if (target) {
+            target.classList.add('selected')
+        }
     }
     return {
         addProjectText,
@@ -59,6 +67,8 @@ const editSideBar = (() => {
 const editContainer = (() => {
     const showTodos = (todo) => {
         // prende l'oggetto todo come lista intera di tutti i todo da mostrare, itera per ogni elemento e li mostra
+        const container = document.querySelector(".ToDoContainer")
+        container.innerHTML = ""
         const circleIcon = '<i class="material-icons">panorama_fish_eye</i>'
         const deleteIcon = '<i class="material-icons">clear</i>'
         for(element in todo) {
@@ -74,17 +84,37 @@ const editContainer = (() => {
     const removeTodo = (target) => {
         toDoContainer.remove(target)
     };
+    const showTodoAdder = () => {
+        let button = document.querySelector('.addTask')
+        if (button) {
+            return
+        }
+        const addButton = document.createElement('button')
+        const plusIcon = '<i class="material-icons">add</i>'
+        const title = document.querySelector(".ToDoContainer h1")
+        addButton.innerHTML = `${plusIcon}<p>Task<p>`
+        addButton.classList.add('addTask')
+        title.after(addButton)
+
+    }
     const editName = (target, newName) => {
 
     };
     const editDate = (target, newDate) => {
 
     };
+
+    const addTaskContext = () => {
+        let container = document.querySelector(".ToDoContainer")
+        container.innerHTML += ""
+    }
     return {
         showTodos,
         removeTodo,
         editName,
-        editDate
+        editDate,
+        showTodoAdder,
+        addTaskContext
     }
 })();
 
