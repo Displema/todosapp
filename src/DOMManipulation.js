@@ -1,4 +1,5 @@
 import DOMPurify from 'dompurify';
+import {addProjectRemoveLogic} from "./buttonLogic"
 
 const toDoSidebar = document.querySelector('.ToDoDate')
 const toDoContainer = document.querySelector('.ToDoContainer')
@@ -23,7 +24,9 @@ const editSideBar = (() => {
             let newProject = e.target.value ? e.target.value : "Default"
             addProject(newProject)
             removeProjectText(input);
+            toggleSelected()
         })
+        toggleSelected(addProjectButton)
     }
     const addProject = (project) => {
         let newProject = document.createElement('button')
@@ -31,17 +34,25 @@ const editSideBar = (() => {
         newProject.innerHTML = `<i class="material-icons">folder</i>${cleanProject}<i class="material-icons">delete</i>`
         newProject.classList.add("singleProject")
         projects.appendChild(newProject)
+        addProjectRemoveLogic();
     };
 
     const removeProject = (target) => {
-        projects.remove(target)
+        target.remove()
     };
-
+    const toggleSelected = (target) => {
+        let selected = document.querySelector('.selected')
+        if (selected) {
+            selected.classList.remove('selected')
+        }
+        target.classList.add('selected')
+    }
     return {
         addProjectText,
         removeProjectText,
         addProject,
         removeProject,
+        toggleSelected,
     };
 })();
 

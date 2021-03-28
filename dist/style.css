@@ -37,7 +37,10 @@ body {
 .ToDoContainer {
     background-color: var(--primary-light);
     font-family: 'Nunito', sans-serif;
-    color: var(--primary-dark)
+    color: var(--primary-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .scrollDate {
@@ -58,7 +61,6 @@ body {
     background: transparent;
     border: solid 1px transparent;
     border-radius: 0.2em;
-    transition: background-color 0.1s linear;
 }
 
 .scrollDate button:hover {
@@ -88,14 +90,13 @@ body {
     border: solid 1px transparent;
     margin: 0.5rem 0;
     border-radius: 0.2em;
-    background-color: transparent;
-    transition: background-color 0.1s linear;
+    background: transparent;
     width: 80%;
     height: 2.5em;
 }
 
 .projects button:hover {
-    background-color: var(--hover-dark);
+    background: var(--hover-dark);
 }
 
 button.singleProject {
@@ -109,13 +110,33 @@ button.singleProject {
 }
 
 .projectButton {
-    background-color: var(--primary-light);
+    background: var(--primary-light);
     width: 80%;
     padding: 0.5rem 0;
     border-radius: 0.2em;
     outline: none;
-    border:none
+    border:none;
 }
+
+.addProject.selected, .projectButton.selected, .inbox.selected, .thisWeek.selected, .today.selected {
+    background: var(--hover-dark);
+    font-weight: bold;
+}
+
+i.material-icons {
+    pointer-events: none;
+}
+
+.singleProject i.material-icons:last-child {
+    pointer-events: auto;
+}
+h1.containerTitle {
+    width: 50%;
+    text-align: left;
+    margin: 0.5em 1em;
+    font-weight: bold;
+}
+
 @media screen and (max-width: 1000px) {
     body {
         grid-template-columns: 30vw 70vw;

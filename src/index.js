@@ -1,4 +1,7 @@
-import todo from "./todoLogic"
 import buttonLogic from "./buttonLogic";
+import { listOfProjects as listOfProjects, default as projectHandler} from "./projectHandler"
 
-buttonLogic();
+
+const app = (() => {
+    buttonLogic()
+})();

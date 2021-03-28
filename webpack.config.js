@@ -7,4 +7,9 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
     },
     mode: "production",
+    resolve: {
+        fallback: {
+          util: require.resolve("util/")
+        }
+}
 };
