@@ -40,28 +40,33 @@ const buttonLogic = () => {
     //li mette all'interno di un array di oggetti
     //mostra gli oggetti
         DOMEdit.editSideBar.toggleSelected(e.target)
+        DOMEdit.editContainer.addTitle("Inbox")
         DOMEdit.editContainer.showTodoAdder()
     });
+    
+    inboxButton.click()
+
+    todayButton.addEventListener('click', (e) => {
+        DOMEdit.editSideBar.toggleSelected(e.target)
+        DOMEdit.editContainer.addTitle("Today")
+    })
+
+    thisWeekButton.addEventListener('click', (e) => {
+        DOMEdit.editSideBar.toggleSelected(e.target)
+        DOMEdit.editContainer.addTitle("This week")
+    })
 
     addProject.addEventListener('click', (e) => {
         DOMEdit.editSideBar.toggleSelected(e.target)
         DOMEdit.editSideBar.addProjectText()
     });
-    
-    todayButton.addEventListener('click', (e) => {
-        DOMEdit.editSideBar.toggleSelected(e.target)
-    })
-
-    thisWeekButton.addEventListener('click', (e) => {
-        DOMEdit.editSideBar.toggleSelected(e.target)
-    })
-
 };
 
 const addTaskLogic = () => {
     const addTask = document.querySelector(".addTask")
     addTask.addEventListener('click', () => {
-        DOMEdit.editContainer.addTaskContext()
+        DOMEdit.editContainer.addTaskContext();
+        DOMEdit.editContainer.removeTodoAdder();
     })
 }
 

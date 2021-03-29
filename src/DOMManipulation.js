@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-import {addProjectRemoveLogic} from "./buttonLogic"
+import {addProjectRemoveLogic, addTaskLogic} from "./buttonLogic"
 import {listOfProjects, default as projectHandler} from "./projectHandler"
 
 const toDoSidebar = document.querySelector('.ToDoDate')
@@ -65,9 +65,9 @@ const editSideBar = (() => {
 })();
 
 const editContainer = (() => {
+    const container = document.querySelector(".ToDoContainer")
     const showTodos = (todo) => {
         // prende l'oggetto todo come lista intera di tutti i todo da mostrare, itera per ogni elemento e li mostra
-        const container = document.querySelector(".ToDoContainer")
         container.innerHTML = ""
         const circleIcon = '<i class="material-icons">panorama_fish_eye</i>'
         const deleteIcon = '<i class="material-icons">clear</i>'
@@ -81,12 +81,16 @@ const editContainer = (() => {
             toDoContainer.appendChild(newElement)
         };
     };
+    const addTitle = (title) => {
+        container.innerHTML = `<h1 class="containerTitle">${title}<h1>`
+    }
     const removeTodo = (target) => {
         toDoContainer.remove(target)
     };
     const showTodoAdder = () => {
         let button = document.querySelector('.addTask')
-        if (button) {
+        let addTaskUI = document.querySelector(".inputTask") ? document.querySelector(".inputTask") : undefined
+        if (button || addTaskUI) {
             return
         }
         const addButton = document.createElement('button')
@@ -95,7 +99,12 @@ const editContainer = (() => {
         addButton.innerHTML = `${plusIcon}<p>Task<p>`
         addButton.classList.add('addTask')
         title.after(addButton)
+    }
 
+    const removeTodoAdder = () => {
+        let button = document.querySelector('.addTask')
+        button.setAttribute('disabled', '')
+        button.style.animation = "taskFade 0.2s linear forwards"
     }
     const editName = (target, newName) => {
 
@@ -106,7 +115,10 @@ const editContainer = (() => {
 
     const addTaskContext = () => {
         let container = document.querySelector(".ToDoContainer")
-        container.innerHTML += ""
+        container.innerHTML += `<div class="inputTask">
+        <input type="text" name="taskName" id="" placeholder="Task name">
+        <button id="confirmAddTask"><i class="material-icons">add</i>Add</button> <button id="cancelAddTask">Cancel</button>
+        </div>`
     }
     return {
         showTodos,
@@ -114,7 +126,9 @@ const editContainer = (() => {
         editName,
         editDate,
         showTodoAdder,
-        addTaskContext
+        addTaskContext,
+        removeTodoAdder,
+        addTitle,
     }
 })();
 

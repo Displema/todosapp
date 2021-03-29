@@ -61,6 +61,7 @@ body {
     background: transparent;
     border: solid 1px transparent;
     border-radius: 0.2em;
+    transition: background 0.2s linear;
 }
 
 .scrollDate button:hover {
@@ -93,6 +94,7 @@ body {
     background: transparent;
     width: 80%;
     height: 2.5em;
+    transition: background 0.2s linear;
 }
 
 .projects button:hover {
@@ -112,7 +114,7 @@ button.singleProject {
 .projectButton {
     background: var(--primary-light);
     width: 80%;
-    padding: 0.5rem 0;
+    padding: 0.5rem 0.4rem;
     border-radius: 0.2em;
     outline: none;
     border:none;
@@ -153,6 +155,50 @@ h1.containerTitle {
 
 .ToDoContainer .addTask:hover {
     background: rgba(161, 161, 161, 0.678);
+}
+
+@keyframes taskFade {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.4;
+    }
+}
+
+.inputTask {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 2em 2em;
+    gap: 0.2em;
+    width: 50%;
+    margin: 0 2em;
+    color: var(--primary-dark);
+    font-family: 'Nunito', sans-serif;
+}
+
+.inputTask input {
+    grid-column: 1/3;
+    background: whitesmoke;
+    outline: none;
+    border: none;
+    padding-left: 0.4em; 
+}
+
+.inputTask button {
+    background: transparent;
+    outline: none;
+    border: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9em;
+    border-radius: 0.2em;
+    transition: background 0.2s linear;
+}
+
+.inputTask button:hover {
+    background: var(--hover-dark);
 }
 
 @media screen and (max-width: 1000px) {
