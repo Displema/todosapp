@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify';
-import {addProjectRemoveLogic, addTaskLogic} from "./buttonLogic"
-import {listOfProjects, default as projectHandler} from "./projectHandler"
+import {addProjectRemoveLogic, addTaskContextLogic} from "./buttonLogic"
+import {listOfProjects, default as Project, checkIPAE, deleteProject} from "./projectHandler"
 
 const toDoSidebar = document.querySelector('.ToDoDate')
 const toDoContainer = document.querySelector('.ToDoContainer')
@@ -22,14 +22,18 @@ const editSideBar = (() => {
         projects.insertBefore(input, addProjectButton)
         input.focus()
         input.addEventListener('blur', (event)=> {
-            let newProject = event.target.value ? event.target.value : "Default"
-            if(listOfProjects.indexOf(newProject) !== -1) {
+            let newProjectName = event.target.value ? event.target.value : "Default"
+
+            if(checkIPAE(newProjectName)) {
                 removeProjectText(input);
                 return
             }
-            addProject(newProject)           
-            removeProjectText(input);
-            projectHandler.addProjectInList(newProject)
+
+            addProject(newProjectName)
+            removeProjectText(input)
+
+            let newProjectObj = new Project(newProjectName)
+            console.log(newProjectObj)
             toggleSelected()
         })
         toggleSelected(addProjectButton)
@@ -46,6 +50,7 @@ const editSideBar = (() => {
     const removeProject = (target) => {
         target.remove()
     };
+
     const toggleSelected = (target) => {
         let selected = document.querySelector('.selected')
         if (selected) {
@@ -81,12 +86,15 @@ const editContainer = (() => {
             toDoContainer.appendChild(newElement)
         };
     };
+
     const addTitle = (title) => {
         container.innerHTML = `<h1 class="containerTitle">${title}<h1>`
     }
+
     const removeTodo = (target) => {
         toDoContainer.remove(target)
     };
+
     const showTodoAdder = () => {
         let button = document.querySelector('.addTask')
         let addTaskUI = document.querySelector(".inputTask") ? document.querySelector(".inputTask") : undefined
@@ -101,16 +109,25 @@ const editContainer = (() => {
         title.after(addButton)
     }
 
-    const removeTodoAdder = () => {
+    const disableTaskAdder = () => {
         let button = document.querySelector('.addTask')
         button.setAttribute('disabled', '')
-        button.style.animation = "taskFade 0.2s linear forwards"
+        button.style.animation = "taskFadeOut 0.2s linear forwards"
     }
-    const editName = (target, newName) => {
 
+    const enableTaskAdder = () => {
+        let button = document.querySelector('.addTask')
+        let div = document.querySelector("body > div.ToDoContainer > div")
+        button.removeAttribute('disabled')
+        button.style.animation = "taskFadeIn 0.2s linear forwards"
+        div.remove()
+    }
+
+    const editName = (target, newName) => {
+        return
     };
     const editDate = (target, newDate) => {
-
+        return
     };
 
     const addTaskContext = () => {
@@ -120,6 +137,7 @@ const editContainer = (() => {
         <button id="confirmAddTask"><i class="material-icons">add</i>Add</button> <button id="cancelAddTask">Cancel</button>
         </div>`
     }
+
     return {
         showTodos,
         removeTodo,
@@ -127,7 +145,8 @@ const editContainer = (() => {
         editDate,
         showTodoAdder,
         addTaskContext,
-        removeTodoAdder,
+        disableTaskAdder,
+        enableTaskAdder,
         addTitle,
     }
 })();

@@ -1,6 +1,6 @@
-import buttonLogic, { addTaskLogic } from "./buttonLogic";
+import buttonLogic, { addTaskContextLogic } from "./buttonLogic";
 import { listOfProjects as listOfProjects, default as projectHandler} from "./projectHandler"
 
 
 buttonLogic()
-addTaskLogic()
+addTaskContextLogic()

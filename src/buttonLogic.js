@@ -1,5 +1,5 @@
 import DOMEdit from "./DOMManipulation"
-import projectHandler from "./projectHandler"
+import { deleteProject as deleteProject } from "./projectHandler"
 
 const inboxButton = document.querySelector(".inbox")
 const todayButton = document.querySelector(".today")
@@ -14,7 +14,7 @@ const addProjectRemoveLogic = () => {
     deleteIcon.forEach(icon => {
         icon.addEventListener('click', (event) => {
             let project = event.target.parentElement
-            projectHandler.deleteProjectFromList(project)
+            deleteProject(project)
             DOMEdit.editSideBar.removeProject(project)
         })
     })
@@ -62,14 +62,38 @@ const buttonLogic = () => {
     });
 };
 
-const addTaskLogic = () => {
+const addTaskContextLogic = () => {
     const addTask = document.querySelector(".addTask")
     addTask.addEventListener('click', () => {
         DOMEdit.editContainer.addTaskContext();
-        DOMEdit.editContainer.removeTodoAdder();
+        DOMEdit.editContainer.disableTaskAdder();
+        taskAdderLogic();
     })
 }
 
-export {addTaskLogic as addTaskLogic, 
+const taskAdderLogic = () => {
+    const addButton = document.querySelector('#confirmAddTask')
+    const deleteButton = document.querySelector('#cancelAddTask')
+    const input = document.querySelector("body > div.ToDoContainer > div > input[type=text]")
+
+    addButton.addEventListener('click', () => {
+        let taskName = (input.value && input.value !== "") ? input.value : undefined
+        if(taskName === undefined) {
+            DOMEdit.editContainer.enableTaskAdder()
+            addTaskContextLogic()
+            return
+        }
+        /// create task class and later adds it to the project selected
+        DOMEdit.editContainer.enableTaskAdder()
+        addTaskContextLogic()
+    })
+
+    deleteButton.addEventListener('click', () => {
+        DOMEdit.editContainer.enableTaskAdder()
+        addTaskContextLogic()
+    })
+}
+
+export {addTaskContextLogic as addTaskContextLogic, 
         addProjectRemoveLogic as addProjectRemoveLogic, 
         buttonLogic as default}
