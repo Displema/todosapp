@@ -63,6 +63,18 @@ const checkIPAE = (name) => { ///check if project already exists
     return result
 } 
 
+const getProjectObject = (projectName) => {
+    function findFunction(project) {
+        if(project.name === projectName) {
+            return true;
+        }
+    }
+
+    let result = listOfProjects.find(findFunction)
+    
+    return result
+}
+
 const deleteProject = (value) => {
     function findIndexFunction(project) {
         if(project.name === value) {
@@ -79,7 +91,11 @@ const deleteProject = (value) => {
     listOfProjects.splice(index, 1)
 }
 
+const Default = new Project("Default")
+
+
 export { listOfProjects as listOfProjects,
         checkIPAE as checkIPAE,
         deleteProject as deleteProject,
+        getProjectObject as getProjectObject,
         Project as default}

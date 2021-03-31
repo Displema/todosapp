@@ -1,5 +1,6 @@
 import DOMEdit from "./DOMManipulation"
-import { deleteProject as deleteProject } from "./projectHandler"
+import { deleteProject, listOfProjects, getProjectObject, default as Project } from "./projectHandler"
+import Task from "./taskLogic"
 
 const inboxButton = document.querySelector(".inbox")
 const todayButton = document.querySelector(".today")
@@ -77,13 +78,27 @@ const taskAdderLogic = () => {
     const input = document.querySelector("body > div.ToDoContainer > div > input[type=text]")
 
     addButton.addEventListener('click', () => {
+
+        //get task name
         let taskName = (input.value && input.value !== "") ? input.value : undefined
         if(taskName === undefined) {
             DOMEdit.editContainer.enableTaskAdder()
             addTaskContextLogic()
             return
         }
-        /// create task class and later adds it to the project selected
+
+        ///checks if a project already exists and/or is selected
+        let targetProjectName = document.querySelector("body > div.ToDoDate > div.projects > button.singleProject.selected")
+        ///if im on index page then no project is selected
+        if(!targetProjectName) {
+            targetProjectName = "Default"
+        }
+        let projectObject = getProjectObject(targetProjectName)
+
+        /// create task class and later adds it to the project selected 
+        let taskObject = new Task(taskName, targetProjectName)
+
+        projectObject.addTaskToProject(taskObject)
         DOMEdit.editContainer.enableTaskAdder()
         addTaskContextLogic()
     })

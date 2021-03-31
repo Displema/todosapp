@@ -1,7 +1,6 @@
 import DOMPurify from 'dompurify';
 import {addProjectRemoveLogic, addTaskContextLogic} from "./buttonLogic"
-import {listOfProjects, default as Project, checkIPAE, deleteProject} from "./projectHandler"
-
+import {listOfProjects, default as Project, checkIPAE, deleteProject, init} from "./projectHandler"
 const toDoSidebar = document.querySelector('.ToDoDate')
 const toDoContainer = document.querySelector('.ToDoContainer')
 const projects = document.querySelector('.projects')
@@ -33,7 +32,6 @@ const editSideBar = (() => {
             removeProjectText(input)
 
             let newProjectObj = new Project(newProjectName)
-            console.log(newProjectObj)
             toggleSelected()
         })
         toggleSelected(addProjectButton)
