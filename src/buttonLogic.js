@@ -22,7 +22,7 @@ const addProjectRemoveLogic = () => {
 
     projects.forEach(project => {
         project.addEventListener('mouseover', (event) => {
-            let icon = (event.target.children[1]) ? event.target.children[1] : event.target;
+            let icon = (event.target.children[2]) ? event.target.children[2] : event.target;
             icon.style.opacity = 1;
         })
         project.addEventListener('mouseout', (event) => {
@@ -40,24 +40,37 @@ const buttonLogic = () => {
     //cerca tutti gli impegni del giorno
     //li mette all'interno di un array di oggetti
     //mostra gli oggetti
+        if(e.target.classList.contains("selected")) {
+            return
+        }
+
         DOMEdit.editSideBar.toggleSelected(e.target)
         DOMEdit.editContainer.addTitle("Inbox")
         DOMEdit.editContainer.showTodoAdder()
     });
     
-    inboxButton.click()
+/*     inboxButton.click() */
 
     todayButton.addEventListener('click', (e) => {
+        if(e.target.classList.contains("selected")) {
+            return
+        }
         DOMEdit.editSideBar.toggleSelected(e.target)
         DOMEdit.editContainer.addTitle("Today")
     })
 
     thisWeekButton.addEventListener('click', (e) => {
+        if(e.target.classList.contains("selected")) {
+            return
+        }
         DOMEdit.editSideBar.toggleSelected(e.target)
         DOMEdit.editContainer.addTitle("This week")
     })
 
     addProject.addEventListener('click', (e) => {
+        if(e.target.classList.contains("selected")) {
+            return
+        }
         DOMEdit.editSideBar.toggleSelected(e.target)
         DOMEdit.editSideBar.addProjectText()
     });
@@ -88,16 +101,16 @@ const taskAdderLogic = () => {
         }
 
         ///checks if a project already exists and/or is selected
-        let targetProjectName = document.querySelector("body > div.ToDoDate > div.projects > button.singleProject.selected")
+        let targetProjectName = document.querySelector("body > div.ToDoDate > div.projects > button.singleProject.selected").children[1].textContent
         ///if im on index page then no project is selected
         if(!targetProjectName) {
             targetProjectName = "Default"
         }
         let projectObject = getProjectObject(targetProjectName)
-
+        console.log(targetProjectName)
         /// create task class and later adds it to the project selected 
         let taskObject = new Task(taskName, targetProjectName)
-
+        DOMEdit.editContainer.addSingleTodo(taskObject)
         projectObject.addTaskToProject(taskObject)
         DOMEdit.editContainer.enableTaskAdder()
         addTaskContextLogic()

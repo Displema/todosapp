@@ -1,11 +1,12 @@
 import DOMPurify from 'dompurify';
 import {addProjectRemoveLogic, addTaskContextLogic} from "./buttonLogic"
-import {listOfProjects, default as Project, checkIPAE, deleteProject, init} from "./projectHandler"
+import {listOfProjects, default as Project, checkIPAE, deleteProject, init, getProjectObject} from "./projectHandler"
 const toDoSidebar = document.querySelector('.ToDoDate')
 const toDoContainer = document.querySelector('.ToDoContainer')
 const projects = document.querySelector('.projects')
 const projectsTitle = document.querySelector(".projects h2")
 const addProjectButton = document.querySelector(".addProject")
+
 
 const editSideBar = (() => {
     const removeProjectText = (input) => {
@@ -25,6 +26,7 @@ const editSideBar = (() => {
 
             if(checkIPAE(newProjectName)) {
                 removeProjectText(input);
+                toggleSelected()
                 return
             }
 
@@ -39,9 +41,22 @@ const editSideBar = (() => {
     const addProject = (project) => {
         let newProject = document.createElement('button')
         let cleanProject = DOMPurify.sanitize(project)
-        newProject.innerHTML = `<i class="material-icons">folder</i>${cleanProject}<i class="material-icons">delete</i>`
+        newProject.innerHTML = `<i class="material-icons">folder</i><div style="pointer-events: none">${cleanProject}</div><i class="material-icons">delete</i>`
         newProject.classList.add("singleProject")
         projects.appendChild(newProject)
+
+        newProject.addEventListener('click', (e) => {
+            let projectName = e.target.children[1].textContent ? e.target.children[1].textContent : undefined
+            if(!projectName) {
+                return
+            }
+            toggleSelected(e.target)
+            DOMEdit.editContainer.addTitle(projectName)
+            let projObj = getProjectObject(projectName)
+            DOMEdit.editContainer.showAllTodos(projObj.task)
+            DOMEdit.editContainer.showTodoAdder()
+
+        })
         addProjectRemoveLogic();
     };
 
@@ -69,21 +84,31 @@ const editSideBar = (() => {
 
 const editContainer = (() => {
     const container = document.querySelector(".ToDoContainer")
-    const showTodos = (todo) => {
+    const showAllTodos = (todo) => {
+        const toDoContainerTitle = document.querySelector("body > div.ToDoContainer > h1.containerTitle").outerHTML
         // prende l'oggetto todo come lista intera di tutti i todo da mostrare, itera per ogni elemento e li mostra
-        container.innerHTML = ""
+        container.innerHTML = toDoContainerTitle
         const circleIcon = '<i class="material-icons">panorama_fish_eye</i>'
         const deleteIcon = '<i class="material-icons">clear</i>'
-        for(element in todo) {
-            let name = element["name"]
-            let dueTo = element["dueTo"]
+        todo.forEach(todo => {
+            let name = todo["name"]
+            /* let dueTo = element["dueTo"] */
             let newElement = document.createElement('button')
             newElement.setAttribute('data-value', `${name}`)
             newElement.classList.add('button-task')
-            newElement.innerHTML = `${circleIcon}<p>${name}</p> <div data-value="${name}"}>${dueTo}</div> ${deleteIcon}}`
+            newElement.innerHTML = `${circleIcon}<p>${name}</p> <div data-value="${name}"}>$</div> ${deleteIcon}}`
             toDoContainer.appendChild(newElement)
-        };
+        });
     };
+
+    const addSingleTodo = (task) => {
+        let taskName = task.name
+        /* let taskDueTo = task.dueTo */
+        const circleIcon = '<i class="material-icons">panorama_fish_eye</i>'
+        const deleteIcon = '<i class="material-icons">clear</i>'
+        let container = document.querySelector("body > div.ToDoContainer")
+        container.innerHTML += `<button class="singleTask">${circleIcon} <p>${taskName}</p>${deleteIcon}</button>`
+    }
 
     const addTitle = (title) => {
         container.innerHTML = `<h1 class="containerTitle">${title}<h1>`
@@ -105,6 +130,8 @@ const editContainer = (() => {
         addButton.innerHTML = `${plusIcon}<p>Task<p>`
         addButton.classList.add('addTask')
         title.after(addButton)
+        // coupled module but I found no way to do it
+        addTaskContextLogic()
     }
 
     const disableTaskAdder = () => {
@@ -137,7 +164,8 @@ const editContainer = (() => {
     }
 
     return {
-        showTodos,
+        showAllTodos,
+        addSingleTodo,
         removeTodo,
         editName,
         editDate,

@@ -3,4 +3,3 @@ import { listOfProjects as listOfProjects, default as projectHandler} from "./pr
 
 
 buttonLogic()
-addTaskContextLogic()
