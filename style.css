@@ -193,7 +193,8 @@ h1.containerTitle {
     background: whitesmoke;
     outline: none;
     border: none;
-    padding-left: 0.4em; 
+    padding-left: 0.4em;
+    width: 100%;
 }
 
 .inputTask button {
@@ -227,6 +228,18 @@ button[disabled] {
     border: none;
     margin: 0.2em 2.2em;
     padding: 0.2em 0;
+}
+
+button.singleTask:nth-child(3) > i:nth-child(1) {
+    padding-left: 0.2em;
+}
+
+.singleTask > i:nth-child(3) {
+    padding-right: 0.2em;
+}
+
+.singleTask > i {
+    pointer-events: auto;
 }
 
 @media screen and (max-width: 1000px) {
