@@ -10,27 +10,24 @@ const toDoContainerTitle = document.querySelector('h1 .containerTitle')
 
 const addProjectRemoveLogic = () => {
     const projects = document.querySelectorAll(".singleProject")
-    const deleteIcon = document.querySelectorAll(".singleProject i:last-of-type")
-
-    deleteIcon.forEach(icon => {
-        icon.addEventListener('click', (event) => {
-            let project = event.target.parentElement
-            deleteProject(project)
-            DOMEdit.editSideBar.removeProject(project)
-        })
-    })
-
     projects.forEach(project => {
         project.addEventListener('mouseover', (event) => {
             let icon = (event.target.children[2]) ? event.target.children[2] : event.target;
             icon.style.opacity = 1;
         })
         project.addEventListener('mouseout', (event) => {
-            let icon = document.querySelector('.singleProject i:last-of-type')
-            if(!event.target || event.target === icon) {
+            if(!event.target || event.target.nodeName === "I") {
                 return
             }
+            let icon = (event.target.children[2]) ? event.target.children[2] : event.target;
             icon.style.opacity = 0;
+        })
+        project.addEventListener('click', (event) => {
+            if (event.target.nodeName === "I") {
+                let project = event.target.parentElement
+                deleteProject(project)
+                DOMEdit.editSideBar.removeProject(project)
+            }
         }) 
     })
 }
@@ -107,7 +104,6 @@ const taskAdderLogic = () => {
             targetProjectName = "Default"
         }
         let projectObject = getProjectObject(targetProjectName)
-        console.log(targetProjectName)
         /// create task class and later adds it to the project selected 
         let taskObject = new Task(taskName, targetProjectName)
         DOMEdit.editContainer.addSingleTodo(taskObject)
@@ -122,6 +118,22 @@ const taskAdderLogic = () => {
     })
 }
 
+const taskButtonLogic = (e) => {
+        if(e.target.nodeName === "I") {
+            switch(e.target.innerHTML) {
+                case "panorama_fish_eye": {
+                    console.log("completed")
+                    break
+                }
+                case "clear": {
+                    console.log("delete")
+                    break
+                }
+            }
+        }
+    }
+
 export {addTaskContextLogic as addTaskContextLogic, 
-        addProjectRemoveLogic as addProjectRemoveLogic, 
+        addProjectRemoveLogic as addProjectRemoveLogic,
+        taskButtonLogic as taskButtonLogic,
         buttonLogic as default}

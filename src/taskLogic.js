@@ -2,6 +2,7 @@ class Task {
     constructor (name, project) {
         this.name = name
         this.project = project || "Default"
+        this.status = false
         this.dueDate = ''
     }
 
@@ -24,6 +25,13 @@ class Task {
     }
     get dueDate() {
         return this._dueDate
+    }
+
+    set status(value) {
+        this._status = value
+    }
+    get status() {
+        return this._status
     }
 }
 

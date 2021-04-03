@@ -1,6 +1,7 @@
 import DOMPurify from 'dompurify';
-import {addProjectRemoveLogic, addTaskContextLogic} from "./buttonLogic"
+import {addProjectRemoveLogic, addTaskContextLogic, taskButtonLogic} from "./buttonLogic"
 import {listOfProjects, default as Project, checkIPAE, deleteProject, init, getProjectObject} from "./projectHandler"
+
 const toDoSidebar = document.querySelector('.ToDoDate')
 const toDoContainer = document.querySelector('.ToDoContainer')
 const projects = document.querySelector('.projects')
@@ -46,10 +47,12 @@ const editSideBar = (() => {
         projects.appendChild(newProject)
 
         newProject.addEventListener('click', (e) => {
-            let projectName = e.target.children[1].textContent ? e.target.children[1].textContent : undefined
-            if(!projectName) {
+            let icon = document.querySelector("body > div.ToDoDate > div.projects > button.singleProject > i:nth-child(3)")
+            if(e.target === icon) {
                 return
             }
+
+            let projectName = e.target.children[1].textContent
             toggleSelected(e.target)
             DOMEdit.editContainer.addTitle(projectName)
             let projObj = getProjectObject(projectName)
@@ -95,9 +98,11 @@ const editContainer = (() => {
             /* let dueTo = element["dueTo"] */
             let newElement = document.createElement('button')
             newElement.setAttribute('data-value', `${name}`)
-            newElement.classList.add('button-task')
-            newElement.innerHTML = `${circleIcon}<p>${name}</p> <div data-value="${name}"}>$</div> ${deleteIcon}}`
+            newElement.classList.add('singleTask')
+            newElement.innerHTML = `${circleIcon}<p>${name}</p>${deleteIcon}`
             toDoContainer.appendChild(newElement)
+            newElement.addEventListener('click', e => 
+                taskButtonLogic(e))
         });
     };
 
@@ -142,7 +147,10 @@ const editContainer = (() => {
 
     const enableTaskAdder = () => {
         let button = document.querySelector('.addTask')
-        let div = document.querySelector("body > div.ToDoContainer > div")
+        let div = document.querySelector("body > div.ToDoContainer > div") ? document.querySelector("body > div.ToDoContainer > div") : undefined
+        if(!div) {
+            return
+        }
         button.removeAttribute('disabled')
         button.style.animation = "taskFadeIn 0.2s linear forwards"
         div.remove()
@@ -156,11 +164,18 @@ const editContainer = (() => {
     };
 
     const addTaskContext = () => {
-        let container = document.querySelector(".ToDoContainer")
-        container.innerHTML += `<div class="inputTask">
-        <input type="text" name="taskName" id="" placeholder="Task name">
-        <button id="confirmAddTask"><i class="material-icons">add</i>Add</button> <button id="cancelAddTask">Cancel</button>
-        </div>`
+        let addTaskButton = document.querySelector("body > div.ToDoContainer > button.addTask")
+
+        let existentDiv = document.querySelector("body > div.ToDoContainer > div") ? document.querySelector("body > div.ToDoContainer > div") : undefined
+        if (existentDiv) {
+            return
+        }
+
+        let newDiv = document.createElement("div")
+        newDiv.classList.add("inputTask")
+        newDiv.innerHTML = `<input type="text" name="taskName" id="" placeholder="Task name">
+        <button id="confirmAddTask"><i class="material-icons">add</i>Add</button> <button id="cancelAddTask">Cancel</button>`
+        addTaskButton.after(newDiv)
     }
 
     return {
