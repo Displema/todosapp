@@ -121,7 +121,7 @@ button.singleProject {
     border:none;
 }
 
-.addProject.selected, .projectButton.selected, .inbox.selected, .thisWeek.selected, .today.selected {
+.addProject.selected, .projectButton.selected, .inbox.selected, .thisWeek.selected, .today.selected, .singleProject.selected {
     background: var(--hover-dark);
     font-weight: bold;
 }
@@ -214,6 +214,19 @@ h1.containerTitle {
 
 button[disabled] {
     pointer-events: none;
+}
+
+.singleTask {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0.2em;
+    width: 50%;
+    background: #F7B243;
+    outline: none;
+    border: none;
+    margin: 0.2em 2.2em;
+    padding: 0.2em 0;
 }
 
 @media screen and (max-width: 1000px) {
