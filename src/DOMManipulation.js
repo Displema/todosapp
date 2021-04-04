@@ -105,20 +105,53 @@ const editContainer = (() => {
                 taskButtonLogic(e))
         });
     };
-
     const addSingleTodo = (task) => {
-        let taskName = task.name
-        /* let taskDueTo = task.dueTo */
         const circleIcon = '<i class="material-icons">panorama_fish_eye</i>'
         const deleteIcon = '<i class="material-icons">clear</i>'
-        let container = document.querySelector("body > div.ToDoContainer")
-        container.innerHTML += `<button class="singleTask">${circleIcon} <p>${taskName}</p>${deleteIcon}</button>`
+        const container = document.querySelector(".ToDoContainer")
+
+        let taskName = task.name
+        /* let taskDueTo = task.dueTo */
+        let newElement = document.createElement('button')
+        newElement.classList.add("singleTask")
+        newElement.innerHTML += `${circleIcon}<p>${taskName}</p>${deleteIcon}`
+        container.innerHTML += newElement.outerHTML
+        newElement.addEventListener('click', e => {
+            taskButtonLogic(e)
+        })
+    }
+    const editTaskStatus = (target, status) => {
+        switch (status) {
+            case "uncompleted": {
+                //removes other classes
+                target.classList.remove('completed')
+                target.classList.remove('expired')
+                break
+            }
+            case "completed": {
+                target.classList.remove('uncompleted')
+                target.classList.remove('expired')
+
+                target.classList.add("completed")
+                break
+            }
+            case "expired": {
+                target.classList.remove('uncompleted')
+                target.classList.remove('completed')
+
+                target.classList.add("expired")
+                break
+            }
+        }
     }
 
     const addTitle = (title) => {
         container.innerHTML = `<h1 class="containerTitle">${title}<h1>`
     }
-
+    const getTitle = () => {
+        let title = document.querySelector(".containerTitle").textContent
+        return title
+    }
     const removeTodo = (target) => {
         toDoContainer.remove(target)
     };
@@ -189,6 +222,8 @@ const editContainer = (() => {
         disableTaskAdder,
         enableTaskAdder,
         addTitle,
+        getTitle,
+        editTaskStatus,
     }
 })();
 

@@ -2,7 +2,7 @@ class Task {
     constructor (name, project) {
         this.name = name
         this.project = project || "Default"
-        this.status = false
+        this.status = 'uncompleted'
         this.dueDate = ''
     }
 

@@ -1,5 +1,6 @@
 import DOMEdit from "./DOMManipulation"
 import { deleteProject, listOfProjects, getProjectObject, default as Project } from "./projectHandler"
+import taskHandler from "./taskHandler"
 import Task from "./taskLogic"
 
 const inboxButton = document.querySelector(".inbox")
@@ -43,6 +44,7 @@ const buttonLogic = () => {
 
         DOMEdit.editSideBar.toggleSelected(e.target)
         DOMEdit.editContainer.addTitle("Inbox")
+        taskHandler.showInbox()
         DOMEdit.editContainer.showTodoAdder()
     });
     
@@ -91,19 +93,21 @@ const taskAdderLogic = () => {
 
         //get task name
         let taskName = (input.value && input.value !== "") ? input.value : undefined
-        if(taskName === undefined) {
+        if(!taskName) {
             DOMEdit.editContainer.enableTaskAdder()
             addTaskContextLogic()
             return
         }
 
-        ///checks if a project already exists and/or is selected
-        let targetProjectName = document.querySelector("body > div.ToDoDate > div.projects > button.singleProject.selected").children[1].textContent
-        ///if im on index page then no project is selected
-        if(!targetProjectName) {
+        let targetProjectName
+        let title = DOMEdit.editContainer.getTitle()
+        if(title === "Inbox") {
             targetProjectName = "Default"
+        } else {
+            targetProjectName = title
         }
         let projectObject = getProjectObject(targetProjectName)
+
         /// create task class and later adds it to the project selected 
         let taskObject = new Task(taskName, targetProjectName)
         DOMEdit.editContainer.addSingleTodo(taskObject)
@@ -122,11 +126,17 @@ const taskButtonLogic = (e) => {
         if(e.target.nodeName === "I") {
             switch(e.target.innerHTML) {
                 case "panorama_fish_eye": {
-                    console.log("completed")
+                    DOMEdit.editContainer.editTaskStatus(e.target.parentElement, "completed")
+                    e.target.innerHTML = "done"
                     break
                 }
                 case "clear": {
                     console.log("delete")
+                    break
+                }
+                case "done": {
+                    DOMEdit.editContainer.editTaskStatus(e.target.parentElement, "uncompleted")
+                    e.target.innerHTML = "panorama_fish_eye"
                     break
                 }
             }
