@@ -16,7 +16,7 @@ body {
     display: grid;
     grid-template-columns: 20vw 80vw;
     grid-template-rows: 7vh 93vh;
-    height: 100vh;
+    max-height: 100vh;
 }
 
 .nav-bar {
@@ -105,6 +105,13 @@ body {
 button.singleProject {
     display: flex;
     justify-content: space-between;
+    height: max-content;
+    padding: 0.4em 0;
+}
+
+.singleProject > div {
+    overflow-wrap: break-word;
+    max-inline-size: calc(100% - 96px);
 }
 
 .singleProject i:last-of-type {
@@ -252,6 +259,12 @@ button[disabled] {
     transition: background 0.2s linear;
     background: #fa3c1b;
 }
+
+.singleTask > p:nth-child(2) {
+    max-inline-size: calc(100% - 96px);
+    overflow-wrap: break-word;
+}
+
 @media screen and (max-width: 1000px) {
     body {
         grid-template-columns: 30vw 70vw;
