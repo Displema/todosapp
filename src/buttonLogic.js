@@ -52,7 +52,7 @@ const buttonLogic = () => {
         DOMEdit.editContainer.showTodoAdder()
     });
     
-/*     inboxButton.click() */
+    inboxButton.click()
 
     todayButton.addEventListener('click', (e) => {
         if(e.target.classList.contains("selected")) {

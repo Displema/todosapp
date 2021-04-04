@@ -154,11 +154,7 @@ const editContainer = (() => {
     }
 
     const addTitle = (title) => {
-        if(title === "Inbox" || title === "Today"||title === "This week") {
-            container.innerHTML = `<h1 class="containerTitle">${title}<h1>`
-            return
-        }
-        container.innerHTML = `<h1 class="containerTitle">Project: ${title}<h1>`
+        container.innerHTML = `<h1 class="containerTitle">${title}</h1>`
     }
     const getTitle = () => {
         let title = document.querySelector(".containerTitle").textContent
