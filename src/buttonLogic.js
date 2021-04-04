@@ -7,7 +7,6 @@ const inboxButton = document.querySelector(".inbox")
 const todayButton = document.querySelector(".today")
 const thisWeekButton = document.querySelector(".thisWeek")
 const addProject = document.querySelector(".addProject")
-const toDoContainerTitle = document.querySelector('h1 .containerTitle')
 
 const addProjectRemoveLogic = () => {
     const projects = document.querySelectorAll(".singleProject")
@@ -26,8 +25,13 @@ const addProjectRemoveLogic = () => {
         project.addEventListener('click', (event) => {
             if (event.target.nodeName === "I") {
                 let project = event.target.parentElement
+                let title = DOMEdit.editContainer.getTitle()
+                if(project.children[1].textContent === title) {
+                    inboxButton.click()
+                }
                 deleteProject(project)
                 DOMEdit.editSideBar.removeProject(project)
+
             }
         }) 
     })
@@ -126,17 +130,21 @@ const taskButtonLogic = (e) => {
         if(e.target.nodeName === "I") {
             switch(e.target.innerHTML) {
                 case "panorama_fish_eye": {
-                    DOMEdit.editContainer.editTaskStatus(e.target.parentElement, "completed")
-                    e.target.innerHTML = "done"
+                    DOMEdit.editContainer.editTaskStatus(e.target, "completed")
                     break
                 }
                 case "clear": {
-                    console.log("delete")
+                    //delete task from project
+                    const projectName = e.target.parentElement.dataset.project
+                    const taskName = e.target.parentElement.dataset.value
+                    const projectObject = getProjectObject(projectName)
+                    projectObject.removeTaskFromProject(taskName)
+                    DOMEdit.editContainer.showAllTodos(projectObject.task)
+                    DOMEdit.editContainer.showTodoAdder()
                     break
                 }
                 case "done": {
-                    DOMEdit.editContainer.editTaskStatus(e.target.parentElement, "uncompleted")
-                    e.target.innerHTML = "panorama_fish_eye"
+                    DOMEdit.editContainer.editTaskStatus(e.target, "uncompleted")
                     break
                 }
             }

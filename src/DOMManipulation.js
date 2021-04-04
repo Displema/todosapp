@@ -47,8 +47,7 @@ const editSideBar = (() => {
         projects.appendChild(newProject)
 
         newProject.addEventListener('click', (e) => {
-            let icon = document.querySelector("body > div.ToDoDate > div.projects > button.singleProject > i:nth-child(3)")
-            if(e.target === icon) {
+            if(e.target.nodeName === "I") {
                 return
             }
 
@@ -94,10 +93,12 @@ const editContainer = (() => {
         const circleIcon = '<i class="material-icons">panorama_fish_eye</i>'
         const deleteIcon = '<i class="material-icons">clear</i>'
         todo.forEach(todo => {
-            let name = todo["name"]
+            let name = todo.name
+            let project = todo.project
             /* let dueTo = element["dueTo"] */
             let newElement = document.createElement('button')
             newElement.setAttribute('data-value', `${name}`)
+            newElement.setAttribute('data-project', `${project}`)
             newElement.classList.add('singleTask')
             newElement.innerHTML = `${circleIcon}<p>${name}</p>${deleteIcon}`
             toDoContainer.appendChild(newElement)
@@ -111,12 +112,15 @@ const editContainer = (() => {
         const container = document.querySelector(".ToDoContainer")
 
         let taskName = task.name
+        let project = task.project
         /* let taskDueTo = task.dueTo */
         let newElement = document.createElement('button')
         newElement.classList.add("singleTask")
+        newElement.setAttribute('data-value', `${taskName}`)
+        newElement.setAttribute('data-project', `${project}`)
         newElement.innerHTML += `${circleIcon}<p>${taskName}</p>${deleteIcon}`
         container.innerHTML += newElement.outerHTML
-        newElement.addEventListener('click', e => {
+        document.querySelector(`[data-value="${taskName}"]`).addEventListener('click', e => {
             taskButtonLogic(e)
         })
     }
@@ -124,29 +128,37 @@ const editContainer = (() => {
         switch (status) {
             case "uncompleted": {
                 //removes other classes
-                target.classList.remove('completed')
-                target.classList.remove('expired')
+                target.parentElement.classList.remove('completed')
+                target.parentElement.classList.remove('expired')
+
+                target.innerHTML = "panorama_fish_eye"
                 break
             }
             case "completed": {
-                target.classList.remove('uncompleted')
-                target.classList.remove('expired')
+                target.parentElement.classList.remove('uncompleted')
+                target.parentElement.classList.remove('expired')
+                target.parentElement.classList.add("completed")
 
-                target.classList.add("completed")
+                target.innerHTML = "done"
                 break
             }
             case "expired": {
-                target.classList.remove('uncompleted')
-                target.classList.remove('completed')
+                target.parentElement.classList.remove('uncompleted')
+                target.parentElement.classList.remove('completed')
+                target.parentElement.classList.add("expired")
 
-                target.classList.add("expired")
+                target.innerHTML = "hourglass_empty"
                 break
             }
         }
     }
 
     const addTitle = (title) => {
-        container.innerHTML = `<h1 class="containerTitle">${title}<h1>`
+        if(title === "Inbox" || title === "Today"||title === "This week") {
+            container.innerHTML = `<h1 class="containerTitle">${title}<h1>`
+            return
+        }
+        container.innerHTML = `<h1 class="containerTitle">Project: ${title}<h1>`
     }
     const getTitle = () => {
         let title = document.querySelector(".containerTitle").textContent
@@ -163,9 +175,9 @@ const editContainer = (() => {
             return
         }
         const addButton = document.createElement('button')
-        const plusIcon = '<i class="material-icons">add</i>'
+        const plusIcon = '<i class="material-icons" style="padding-right: 0.2em">add_task</i>'
         const title = document.querySelector(".ToDoContainer h1")
-        addButton.innerHTML = `${plusIcon}<p>Task<p>`
+        addButton.innerHTML = `${plusIcon}<p>Add task</p>`
         addButton.classList.add('addTask')
         title.after(addButton)
         // coupled module but I found no way to do it

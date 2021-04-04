@@ -46,10 +46,14 @@ class Project {
     }
 
     removeTaskFromProject(value) {
-        let index = this.task.indexOf(value)
-        if(index !== -1) {
-            this.task.splice(index, 1)
+    function findIndexFunction(task) {
+        if(task.name === value) {
+            return true;
         }
+    }
+
+    let result = this.task.findIndex(findIndexFunction)
+    this.task.splice(result, 1)
     }
 }
 
