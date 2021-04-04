@@ -223,14 +223,15 @@ button[disabled] {
     align-items: center;
     border-radius: 0.2em;
     width: 50%;
-    background: #F7B243;
+    background: #FAD41B;
     outline: none;
     border: none;
     margin: 0.2em 2.2em;
     padding: 0.2em 0;
+    transition: background 0.2s linear;
 }
 
-button.singleTask:nth-child(3) > i:nth-child(1) {
+.singleTask > i:nth-child(1) {
     padding-left: 0.2em;
 }
 
@@ -242,6 +243,15 @@ button.singleTask:nth-child(3) > i:nth-child(1) {
     pointer-events: auto;
 }
 
+.singleTask.completed {
+    transition: background 0.2s linear;
+    background: #22fa1b;
+}
+
+.singleTask.expired {
+    transition: background 0.2s linear;
+    background: #fa3c1b;
+}
 @media screen and (max-width: 1000px) {
     body {
         grid-template-columns: 30vw 70vw;
