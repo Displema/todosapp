@@ -1,6 +1,6 @@
 import DOMEdit from "./DOMManipulation"
 import localStorageHandler from "./localStorageHandler"
-import { deleteProject, listOfProjects, getProjectObject, default as Project } from "./projectHandler"
+import { deleteProject, getProjectObject, default as Project } from "./projectHandler"
 import taskHandler from "./taskHandler"
 import Task from "./taskLogic"
 
@@ -115,7 +115,9 @@ const taskAdder = () => {
             targetProjectName = title
         }
         let projectObject = getProjectObject(targetProjectName)
-
+        if(!projectObject) {
+            projectObject = new Project("Default")
+        }
         /// create task class and later adds it to the project selected 
         let taskObject = new Task(taskName, targetProjectName)
         DOMEdit.editContainer.addSingleTodo(taskObject)
