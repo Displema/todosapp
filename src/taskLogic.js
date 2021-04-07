@@ -3,7 +3,7 @@ class Task {
         this.name = name
         this.project = project || "Default"
         this.status = 'uncompleted'
-        this.dueDate = ''
+        this.dueTo = 'No date'
     }
 
     set name(value) {
@@ -20,11 +20,11 @@ class Task {
         return this._project
     }
 
-    set dueDate(value) {
-        this._dueDate = value
+    set dueTo(value) {
+        this._dueTo = value
     }
-    get dueDate() {
-        return this._dueDate
+    get dueTo() {
+        return this._dueTo
     }
 
     set status(value) {

@@ -221,6 +221,7 @@ const editContainer = (() => {
         input.addEventListener('blur', () => {
             let newName = input.value && input.value !== "" && input.value !== currName ? input.value : currName
             projectObject.editTaskName(currName, newName)
+            /* localStorageHandler.addProjectToLS(projectObject) */
             if (!(currTitle === "Inbox" || currTitle === "This week" || currTitle === "Today")) {
                 DOMEdit.editContainer.showAllTodos(projectObject.task)
                 showTodoAdder()
@@ -229,6 +230,14 @@ const editContainer = (() => {
                 case 'Inbox': {
                     taskHandler.showInbox()
                     showTodoAdder()
+                    break
+                }
+                case 'Today': {
+                    taskHandler.showToday()
+                    break
+                }
+                case 'This week': {
+                    taskHandler.showThisWeek()
                     break
                 }
             }
@@ -259,6 +268,14 @@ const editContainer = (() => {
                 case 'Inbox': {
                     taskHandler.showInbox()
                     showTodoAdder()
+                    break
+                }
+                case 'Today': {
+                    taskHandler.showToday()
+                    break
+                }
+                case 'This week': {
+                    taskHandler.showThisWeek()
                     break
                 }
             }

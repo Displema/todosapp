@@ -9,7 +9,12 @@ const getReadableDate = (date) => {
 }
 
 const stringToDate = (dateStr) => {
-    var parts = dateStr.split("-")
+    if(dateStr.includes("-")){ 
+        var parts = dateStr.split("-")
+    } else {
+        var parts = dateStr.split("/")
+        return new Date(parts[2], parts[1] - 1, parts[0])
+    }
     return new Date(parts[0], parts[1] - 1, parts[2])
   }
 
@@ -17,4 +22,4 @@ const formatDate = (dateStr) => {
     let dateObj = stringToDate(dateStr)
     return getReadableDate(dateObj)
 }
-export {formatDate}
+export {formatDate, stringToDate}

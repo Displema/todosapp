@@ -60,6 +60,7 @@ const buttonLogic = () => {
         }
         DOMEdit.editSideBar.toggleSelected(e.target)
         DOMEdit.editContainer.addTitle("Today")
+        taskHandler.showToday()
     })
 
     thisWeekButton.addEventListener('click', (e) => {
@@ -68,6 +69,7 @@ const buttonLogic = () => {
         }
         DOMEdit.editSideBar.toggleSelected(e.target)
         DOMEdit.editContainer.addTitle("This week")
+        taskHandler.showThisWeek()
     })
 
     addProject.addEventListener('click', (e) => {

@@ -23,6 +23,7 @@
     "webpack-cli": "^4.5.0"
   },
   "dependencies": {
+    "date-fns": "^2.19.0",
     "dompurify": "^2.2.7",
     "util": "^0.12.3"
   }

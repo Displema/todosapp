@@ -1,4 +1,40 @@
-const listOfProjects = []
+class Task {
+    constructor (name, project) {
+        this.name = name
+        this.project = project || "Default"
+        this.status = 'uncompleted'
+        this.dueTo = 'No date'
+    }
+
+    set name(value) {
+        this._name = value
+    }
+    get name() {
+        return this._name
+    }
+
+    set project(value) {
+        this._project = value
+    }
+    get project() {
+        return this._project
+    }
+
+    set dueTo(value) {
+        this._dueTo = value
+    }
+    get dueTo() {
+        return this._dueTo
+    }
+
+    set status(value) {
+        this._status = value
+    }
+    get status() {
+        return this._status
+    }
+}
+///////////
 
 class Project {
     constructor(name) {
@@ -106,10 +142,44 @@ const deleteProject = (value) => {
     listOfProjects.splice(index, 1)
 }
 
-const Default = new Project("Default")
+const loadLS = () => {
+    if(localStorage.length === 0) {
+        return
+    }
+    Object.keys(localStorage).forEach(key => {
+        listOfProjects = []
+        let jsoned = localStorage.getItem(key)
+        let parsedProject = JSON.parse(jsoned)
+        let projectTask = parsedProject.task
+        const newProject = new Project(key)
+        projectTask.forEach(task => {
+            const newTask = new Task(task._name, key)
+            newTask.status = task._status
+            newTask.dueTo = task._dueTo
+            newProject.addTaskToProject(newTask)
+        })
+        console.log(newProject)
+     });
+}
 
-export { listOfProjects as listOfProjects,
-        checkIPAE as checkIPAE,
-        deleteProject as deleteProject,
-        getProjectObject as getProjectObject,
-        Project as default}
+const addProjectToLS = project => {
+    const projectName = project.name
+    const projectStringified = JSON.stringify(project)
+    localStorage.setItem(projectName, projectStringified)
+}
+
+const editTaskNameLS = task => {
+    const projectName = task.project
+    const projectObject = getProjectObject(projectName)
+    const stringified = JSON.stringify(projectObject)
+    localStorage.setItem(projectName, stringified)
+}
+
+const localStorageHandler = (() => {
+    return {
+        loadLS,
+        addProjectToLS,
+    }
+})();
+
+export default localStorageHandler
