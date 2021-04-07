@@ -263,6 +263,17 @@ button[disabled] {
 .singleTask > p:nth-child(2) {
     max-inline-size: calc(100% - 96px);
     overflow-wrap: break-word;
+    margin: auto auto;
+}
+
+.singleTask > i, .singleTask > p {
+    cursor: pointer;
+}
+
+.singleTask > input[type="text"] {
+        background: var(--secondary-light);
+        border: none;
+        padding: 0.2em .3em;
 }
 
 @media screen and (max-width: 1000px) {
