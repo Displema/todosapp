@@ -1,4 +1,5 @@
 import DOMEdit from "./DOMManipulation"
+import localStorageHandler from "./localStorageHandler"
 import { deleteProject, listOfProjects, getProjectObject, default as Project } from "./projectHandler"
 import taskHandler from "./taskHandler"
 import Task from "./taskLogic"
@@ -26,12 +27,13 @@ const addProjectRemove = () => {
             if (event.target.nodeName === "I") {
                 let project = event.target.parentElement
                 let title = DOMEdit.editContainer.getTitle()
+                let projectName = project.children[1].textContent
+                deleteProject(project)
                 if(project.children[1].textContent === title) {
                     inboxButton.click()
                 }
-                deleteProject(project)
+                localStorageHandler.removeProjectFromLS(projectName)
                 DOMEdit.editSideBar.removeProject(project)
-
             }
         }) 
     })
@@ -118,6 +120,7 @@ const taskAdder = () => {
         let taskObject = new Task(taskName, targetProjectName)
         DOMEdit.editContainer.addSingleTodo(taskObject)
         projectObject.addTaskToProject(taskObject)
+        localStorageHandler.addProjectToLS(projectObject)
         DOMEdit.editContainer.enableTaskAdder()
         addTaskContext()
     })
@@ -138,11 +141,13 @@ const taskButton = (e) => {
                 case "panorama_fish_eye": {
                     DOMEdit.editContainer.editTaskStatus(e.target, "completed")
                     projectObject.editTaskStatus(taskName, 'completed')
+                    localStorageHandler.addProjectToLS(projectObject)
                     break
                 }
                 case "clear": {
                     //delete task from project
                     projectObject.removeTaskFromProject(taskName)
+                    localStorageHandler.addProjectToLS(projectObject)
                     if (!(currTitle === "Inbox" || currTitle === "This week" || currTitle === "Today")) {
                         DOMEdit.editContainer.showAllTodos(projectObject.task)
                         DOMEdit.editContainer.showTodoAdder()
@@ -155,6 +160,7 @@ const taskButton = (e) => {
                 case "done": {
                     DOMEdit.editContainer.editTaskStatus(e.target, "uncompleted")
                     projectObject.editTaskStatus(taskName, 'uncompleted')
+                    localStorageHandler.addProjectToLS(projectObject)
                     break
                 }
             }

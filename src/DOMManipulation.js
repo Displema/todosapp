@@ -3,6 +3,7 @@ import {addProjectRemoveLogic, addTaskContextLogic, taskButtonLogic, editTaskNam
 import { formatDate } from './dateHandler';
 import {listOfProjects, default as Project, checkIPAE, getProjectObject} from "./projectHandler"
 import taskHandler from "./taskHandler"
+import localStorageHandler from "./localStorageHandler"
 
 const toDoSidebar = document.querySelector('.ToDoDate')
 const toDoContainer = document.querySelector('.ToDoContainer')
@@ -37,11 +38,15 @@ const editSideBar = (() => {
             removeProjectText(input)
 
             let newProjectObj = new Project(newProjectName)
+            localStorageHandler.addProjectToLS(newProjectObj)
             toggleSelected()
         })
         toggleSelected(addProjectButton)
     }
     const addProject = (project) => {
+        if(project === "Default") {
+            return
+        }
         let newProject = document.createElement('button')
         let cleanProject = DOMPurify.sanitize(project)
         newProject.innerHTML = `<i class="material-icons">folder</i><div style="pointer-events: none">${cleanProject}</div><i class="material-icons">delete</i>`
@@ -221,7 +226,7 @@ const editContainer = (() => {
         input.addEventListener('blur', () => {
             let newName = input.value && input.value !== "" && input.value !== currName ? input.value : currName
             projectObject.editTaskName(currName, newName)
-            /* localStorageHandler.addProjectToLS(projectObject) */
+            localStorageHandler.addProjectToLS(projectObject)
             if (!(currTitle === "Inbox" || currTitle === "This week" || currTitle === "Today")) {
                 DOMEdit.editContainer.showAllTodos(projectObject.task)
                 showTodoAdder()
@@ -259,6 +264,8 @@ const editContainer = (() => {
             if(newDate) {
                 let formattedDate = formatDate(newDate)
                 projectObject.editTaskDate(taskName, formattedDate)
+                /* console.log(projectObject) */
+                localStorageHandler.addProjectToLS(projectObject)
             }
             if (!(currTitle === "Inbox" || currTitle === "This week" || currTitle === "Today")) {
                 DOMEdit.editContainer.showAllTodos(projectObject.task)

@@ -106,7 +106,7 @@ const deleteProject = (value) => {
     listOfProjects.splice(index, 1)
 }
 
-const Default = new Project("Default")
+/* const Default = new Project("Default") */
 
 export { listOfProjects as listOfProjects,
         checkIPAE as checkIPAE,

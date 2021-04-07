@@ -6,11 +6,10 @@ let taskArray = []
 
 // if I'm on inbox then I show every task from every project
 const showInbox = () => {
-    if(listOfProjects.length === 0) {
-        return
-    }
     listOfProjects.forEach(project => {
         if (project.task.length === 0) {
+            let title = DOMEdit.editContainer.getTitle()
+            DOMEdit.editContainer.addTitle(title)
             return
         }
         project.task.forEach(task => {
@@ -25,9 +24,6 @@ const showInbox = () => {
 }
 
 const showToday = () => {
-    if(listOfProjects.length === 0) {
-        return
-    }
     let today = new Date()
     today.setDate(today.getDate() - 1)
     listOfProjects.forEach(project => {
@@ -49,11 +45,8 @@ const showToday = () => {
     taskArray = []
 }
 const showThisWeek = () => {
-    if(listOfProjects.length === 0) {
-        return
-    }
-    let today = new Date()
-    today.setDate(today.getDate() - 7)
+    let sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
     listOfProjects.forEach(project => {
         if (project.task.length === 0) {
             return
@@ -64,7 +57,7 @@ const showThisWeek = () => {
                 return
             }
             let objectDate = stringToDate(notObjectDate)
-            if(isAfter(objectDate, today)) {
+            if(!isAfter(sevenDaysAgo, objectDate)) {
                 taskArray.push(task)
             }
         })
@@ -73,11 +66,31 @@ const showThisWeek = () => {
     taskArray = []
 }
 
+const checkExpiration = () => {
+    let today = new Date()
+    listOfProjects.forEach(project => {
+        if (project.task.length === 0) {
+            return
+        }
+        project.task.forEach(task => {
+            let notObjectDate = task.dueTo
+            if(notObjectDate === "No date") {
+                return
+            }
+            let objectDate = stringToDate(notObjectDate)
+            if(!isAfter(objectDate, today)) {
+                task.status = "expired"
+            }
+        })
+    })
+}
+
 const taskHandler = (() => {
     return {
         showInbox,
         showToday,
         showThisWeek,
+        checkExpiration,
     }
 })();
 
