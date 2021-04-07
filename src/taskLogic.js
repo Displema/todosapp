@@ -21,7 +21,7 @@ class Task {
     }
 
     set dueDate(value) {
-        ///
+        this._dueDate = value
     }
     get dueDate() {
         return this._dueDate

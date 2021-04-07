@@ -8,7 +8,7 @@ const todayButton = document.querySelector(".today")
 const thisWeekButton = document.querySelector(".thisWeek")
 const addProject = document.querySelector(".addProject")
 
-const addProjectRemoveLogic = () => {
+const addProjectRemove = () => {
     const projects = document.querySelectorAll(".singleProject")
     projects.forEach(project => {
         project.addEventListener('mouseover', (event) => {
@@ -79,16 +79,16 @@ const buttonLogic = () => {
     });
 };
 
-const addTaskContextLogic = () => {
+const addTaskContext = () => {
     const addTask = document.querySelector(".addTask")
     addTask.addEventListener('click', () => {
         DOMEdit.editContainer.addTaskContext();
         DOMEdit.editContainer.disableTaskAdder();
-        taskAdderLogic();
+        taskAdder();
     })
 }
 
-const taskAdderLogic = () => {
+const taskAdder = () => {
     const addButton = document.querySelector('#confirmAddTask')
     const deleteButton = document.querySelector('#cancelAddTask')
     const input = document.querySelector("body > div.ToDoContainer > div > input[type=text]")
@@ -99,7 +99,7 @@ const taskAdderLogic = () => {
         let taskName = (input.value && input.value !== "") ? input.value : undefined
         if(!taskName) {
             DOMEdit.editContainer.enableTaskAdder()
-            addTaskContextLogic()
+            addTaskContext()
             return
         }
 
@@ -117,41 +117,62 @@ const taskAdderLogic = () => {
         DOMEdit.editContainer.addSingleTodo(taskObject)
         projectObject.addTaskToProject(taskObject)
         DOMEdit.editContainer.enableTaskAdder()
-        addTaskContextLogic()
+        addTaskContext()
     })
 
     deleteButton.addEventListener('click', () => {
         DOMEdit.editContainer.enableTaskAdder()
-        addTaskContextLogic()
+        addTaskContext()
     })
 }
 
-const taskButtonLogic = (e) => {
+const taskButton = (e) => {
         if(e.target.nodeName === "I") {
+            const projectName = e.target.parentElement.dataset.project
+            const taskName = e.target.parentElement.dataset.value
+            const projectObject = getProjectObject(projectName)
+            const currTitle = DOMEdit.editContainer.getTitle()
             switch(e.target.innerHTML) {
                 case "panorama_fish_eye": {
                     DOMEdit.editContainer.editTaskStatus(e.target, "completed")
+                    projectObject.editTaskStatus(taskName, 'completed')
                     break
                 }
                 case "clear": {
                     //delete task from project
-                    const projectName = e.target.parentElement.dataset.project
-                    const taskName = e.target.parentElement.dataset.value
-                    const projectObject = getProjectObject(projectName)
                     projectObject.removeTaskFromProject(taskName)
-                    DOMEdit.editContainer.showAllTodos(projectObject.task)
+                    if (!(currTitle === "Inbox" || currTitle === "This week" || currTitle === "Today")) {
+                        DOMEdit.editContainer.showAllTodos(projectObject.task)
+                        DOMEdit.editContainer.showTodoAdder()
+                        return
+                    }
+                    taskHandler.showInbox()
                     DOMEdit.editContainer.showTodoAdder()
                     break
                 }
                 case "done": {
                     DOMEdit.editContainer.editTaskStatus(e.target, "uncompleted")
+                    projectObject.editTaskStatus(taskName, 'uncompleted')
                     break
                 }
             }
         }
     }
 
-export {addTaskContextLogic as addTaskContextLogic, 
-        addProjectRemoveLogic as addProjectRemoveLogic,
-        taskButtonLogic as taskButtonLogic,
+
+const editTaskName = (e) => {
+    let currName = e.target.textContent
+    DOMEdit.editContainer.editNameContext(e.target, currName)
+}
+
+const editTaskDate = (e) => {
+    let currDate = (e.target.textContent !== "No date") ? e.target.textContent : ''
+    DOMEdit.editContainer.editDateContext(e.target,currDate)
+}
+
+export {addTaskContext as addTaskContextLogic, 
+        addProjectRemove as addProjectRemoveLogic,
+        taskButton as taskButtonLogic,
+        editTaskName as editTaskNameLogic,
+        editTaskDate as editTaskDateLogic,
         buttonLogic as default}

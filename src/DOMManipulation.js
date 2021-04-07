@@ -1,6 +1,8 @@
 import DOMPurify from 'dompurify';
-import {addProjectRemoveLogic, addTaskContextLogic, taskButtonLogic} from "./buttonLogic"
-import {listOfProjects, default as Project, checkIPAE, deleteProject, init, getProjectObject} from "./projectHandler"
+import {addProjectRemoveLogic, addTaskContextLogic, taskButtonLogic, editTaskNameLogic, editTaskDateLogic} from "./buttonLogic"
+import { formatDate } from './dateHandler';
+import {listOfProjects, default as Project, checkIPAE, getProjectObject} from "./projectHandler"
+import taskHandler from "./taskHandler"
 
 const toDoSidebar = document.querySelector('.ToDoDate')
 const toDoContainer = document.querySelector('.ToDoContainer')
@@ -88,41 +90,50 @@ const editContainer = (() => {
     const container = document.querySelector(".ToDoContainer")
     const showAllTodos = (todo) => {
         const toDoContainerTitle = document.querySelector("body > div.ToDoContainer > h1.containerTitle").outerHTML
-        // prende l'oggetto todo come lista intera di tutti i todo da mostrare, itera per ogni elemento e li mostra
         container.innerHTML = toDoContainerTitle
-        const circleIcon = '<i class="material-icons">panorama_fish_eye</i>'
-        const deleteIcon = '<i class="material-icons">clear</i>'
+        let circleIcon = '<i title="Edit task status"class="material-icons">panorama_fish_eye</i>'
+        const deleteIcon = '<i title="Delete task" class="material-icons">clear</i>'
         todo.forEach(todo => {
             let name = todo.name
             let project = todo.project
-            /* let dueTo = element["dueTo"] */
+            let dueTo = todo.dueTo || 'No date'
+            let status = todo.status
             let newElement = document.createElement('button')
             newElement.setAttribute('data-value', `${name}`)
             newElement.setAttribute('data-project', `${project}`)
             newElement.classList.add('singleTask')
-            newElement.innerHTML = `${circleIcon}<p>${name}</p>${deleteIcon}`
+            if(status === "expired") {
+                newElement.classList.add('expired')
+            } else if (status === "completed") {
+                newElement.classList.add('completed')
+                circleIcon = '<i title="Edit task status"class="material-icons">done</i>'
+            }
+
+            newElement.innerHTML = `${circleIcon}<p>${name}</p><p>${dueTo}</p>${deleteIcon}`
             toDoContainer.appendChild(newElement)
-            newElement.addEventListener('click', e => 
-                taskButtonLogic(e))
+
+            newElement.addEventListener('click', e => taskButtonLogic(e))
+            document.querySelector(`[data-value="${name}"] p`).addEventListener('click', e => editTaskNameLogic(e))
+            document.querySelector(`[data-value="${name}"] p:nth-child(3)`).addEventListener('click', e => editTaskDateLogic(e))
         });
     };
     const addSingleTodo = (task) => {
-        const circleIcon = '<i class="material-icons">panorama_fish_eye</i>'
-        const deleteIcon = '<i class="material-icons">clear</i>'
+        const circleIcon = '<i title="Edit task status" class="material-icons">panorama_fish_eye</i>'
+        const deleteIcon = '<i title="Delete task" class="material-icons">clear</i>'
         const container = document.querySelector(".ToDoContainer")
 
         let taskName = task.name
         let project = task.project
-        /* let taskDueTo = task.dueTo */
+        let taskDueTo = task.dueTo || 'No date'
         let newElement = document.createElement('button')
         newElement.classList.add("singleTask")
         newElement.setAttribute('data-value', `${taskName}`)
         newElement.setAttribute('data-project', `${project}`)
-        newElement.innerHTML += `${circleIcon}<p>${taskName}</p>${deleteIcon}`
+        newElement.innerHTML += `${circleIcon}<p>${taskName}</p><p>${taskDueTo}</p>${deleteIcon}`
         container.innerHTML += newElement.outerHTML
-        document.querySelector(`[data-value="${taskName}"]`).addEventListener('click', e => {
-            taskButtonLogic(e)
-        })
+        document.querySelector(`[data-value="${taskName}"]`).addEventListener('click', e => taskButtonLogic(e))
+        document.querySelector(`[data-value="${taskName}"] p`).addEventListener('click', e => editTaskNameLogic(e))
+        document.querySelector(`[data-value="${taskName}"] p:nth-child(3)`).addEventListener('click', e => editTaskDateLogic(e))
     }
     const editTaskStatus = (target, status) => {
         switch (status) {
@@ -197,11 +208,61 @@ const editContainer = (() => {
         div.remove()
     }
 
-    const editName = (target, newName) => {
-        return
+    const editNameContext = (target, currName) => {
+        let currTitle = getTitle()
+        let projectName = target.parentElement.dataset.project
+        const projectObject = getProjectObject(projectName)
+        let input = document.createElement('input')
+        input.setAttribute('type', 'text')
+        input.setAttribute('placeholder', currName)
+        target.after(input)
+        target.remove()
+        input.focus()
+        input.addEventListener('blur', () => {
+            let newName = input.value && input.value !== "" && input.value !== currName ? input.value : currName
+            projectObject.editTaskName(currName, newName)
+            if (!(currTitle === "Inbox" || currTitle === "This week" || currTitle === "Today")) {
+                DOMEdit.editContainer.showAllTodos(projectObject.task)
+                showTodoAdder()
+            }
+            switch(currTitle) {
+                case 'Inbox': {
+                    taskHandler.showInbox()
+                    showTodoAdder()
+                    break
+                }
+            }
+        })
     };
-    const editDate = (target, newDate) => {
-        return
+    const editDateContext = (target, currDate) => {
+        let currTitle = getTitle();
+        let projectName = target.parentElement.dataset.project
+        let taskName = target.parentElement.dataset.value
+        const projectObject = getProjectObject(projectName)
+        let input = document.createElement('input')
+        input.setAttribute('type', 'date')
+        input.setAttribute('value', currDate)
+        target.after(input)
+        target.remove()
+        input.focus()
+        input.addEventListener('blur', () => {
+            let newDate = input.value && input.value !== "" && input.value !== currDate ? input.value : currDate
+            if(newDate) {
+                let formattedDate = formatDate(newDate)
+                projectObject.editTaskDate(taskName, formattedDate)
+            }
+            if (!(currTitle === "Inbox" || currTitle === "This week" || currTitle === "Today")) {
+                DOMEdit.editContainer.showAllTodos(projectObject.task)
+                showTodoAdder()
+            }
+            switch(currTitle) {
+                case 'Inbox': {
+                    taskHandler.showInbox()
+                    showTodoAdder()
+                    break
+                }
+            }
+        })
     };
 
     const addTaskContext = () => {
@@ -223,8 +284,8 @@ const editContainer = (() => {
         showAllTodos,
         addSingleTodo,
         removeTodo,
-        editName,
-        editDate,
+        editNameContext,
+        editDateContext,
         showTodoAdder,
         addTaskContext,
         disableTaskAdder,

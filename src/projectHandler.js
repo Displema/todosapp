@@ -45,6 +45,39 @@ class Project {
         this.task.push(value)
     }
 
+    editTaskName(oldName, newName) {
+        function findIndexFunction(task) {
+            if(task.name === oldName) {
+                return true;
+            }
+        }
+    
+        let result = this.task.findIndex(findIndexFunction)
+        this.task[result].name = newName
+    }
+
+    editTaskStatus(taskName, newStatus) {
+        function findIndexFunction(task) {
+            if(task.name === taskName) {
+                return true;
+            }
+        }
+    
+        let result = this.task.findIndex(findIndexFunction)
+        this.task[result].status = newStatus
+    }
+
+    editTaskDate(taskName, newDate) {
+        function findIndexFunction(task) {
+            if(task.name === taskName) {
+                return true;
+            }
+        }
+    
+        let result = this.task.findIndex(findIndexFunction)
+        this.task[result].dueTo = newDate
+    }
+    
     removeTaskFromProject(value) {
     function findIndexFunction(task) {
         if(task.name === value) {
